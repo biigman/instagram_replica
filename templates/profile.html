@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Instagram Replica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #0095f6;
+      font-weight: bold;
+    }
+    button {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #0086e0;
+    }
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    .profile-picture {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+    .profile-picture-placeholder {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: #aaa;
+      margin-right: 20px;
+    }
+    .profile-details {
+      flex-grow: 1;
+    }
+    .profile-stats {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      margin: 15px 0;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .stat-count {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .feed-post {
+      margin-bottom: 30px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .post-header {
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+    .post-header a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .post-image {
+      width: 100%;
+      max-height: 500px;
+      object-fit: cover;
+    }
+    .post-content {
+      padding: 10px;
+    }
+    .post-date {
+      color: #999;
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+    .create-post-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #0095f6;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .profile-action {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    .profile-action .edit-button {
+      background-color: transparent;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .profile-action .edit-button:hover {
+      background-color: #f0f0f0;
+    }
+    .comment-section {
+      padding: 10px;
+      border-top: 1px solid #eee;
+    }
+    .comment {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    .comment-username {
+      font-weight: bold;
+    }
+    .comment-form {
+      display: flex;
+      margin-top: 10px;
+    }
+    .comment-input {
+      flex-grow: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .comment-submit {
+      margin-left: 8px;
+    }
+    .show-more {
+      color: #999;
+      cursor: pointer;
+      font-size: 0.9rem;
+      text-align: center;
+      margin: 5px 0;
+    }
+    .stat a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .bio-section {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .bio-text {
+      margin-bottom: 5px;
+    }
+    .website-link {
+      color: #0095f6;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .website-link:hover {
+      text-decoration: underline;
+    }
+    .username-display {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Instagram Replica</h1>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/search">Search</a>
+      <button id="sign-out">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="profile-info">
+    <div class="profile-header">
+      <div>
+        {% if user_data.profile_picture %}
+          <img src="{{ user_data.profile_picture }}" alt="Profile picture" class="profile-picture">
+        {% else %}
+          <div class="profile-picture-placeholder">
+            {{ user_data.name[0] | upper }}
+          </div>
+        {% endif %}
+      </div>
+      <div class="profile-details">
+        <h2>{{ user_data.name }}</h2>
+        {% if user_data.username %}
+          <p class="username-display">@{{ user_data.username }}</p>
+        {% else %}
+          <p class="username-display">@{{ user_data.id }}</p>
+        {% endif %}
+      </div>
+    </div>
+    
+    {% if user_data.bio %}
+    <div class="bio-section">
+      <p class="bio-text">{{ user_data.bio }}</p>
+    </div>
+    {% endif %}
+    
+    {% if user_data.website %}
+    <div class="bio-section">
+      <a href="{{ user_data.website }}" target="_blank" class="website-link">{{ user_data.website }}</a>
+    </div>
+    {% endif %}
+    
+    <div class="profile-stats">
+      <div class="stat">
+        <span class="stat-count">{{ posts|length }}</span>
+        <span class="stat-label">Posts</span>
+      </div>
+      <div class="stat">
+        <a href="/followers/{{ user_data.id }}">
+          <span class="stat-count">{{ user_data.followers|length }}</span>
+          <span class="stat-label">Followers</span>
+        </a>
+      </div>
+      <div class="stat">
+        <a href="/following/{{ user_data.id }}">
+          <span class="stat-count">{{ user_data.following|length }}</span>
+          <span class="stat-label">Following</span>
+        </a>
+      </div>
+    </div>
+    
+    {% if is_own_profile %}
+      <div class="profile-action">
+        <a href="/create-post"><button>Create Post</button></a>
+        <a href="/edit-profile"><button class="edit-button">Edit Profile</button></a>
+      </div>
+    {% else %}
+      <div class="profile-action">
+        {% if current_user.id in user_data.followers %}
+          <form action="/unfollow/{{ user_data.id }}" method="POST">
+            <button type="submit">Unfollow</button>
+          </form>
+        {% else %}
+          <form action="/follow/{{ user_data.id }}" method="POST">
+            <button type="submit">Follow</button>
+          </form>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <main>
+    {% if posts %}
+      {% for post in posts %}
+      <div class="feed-post" id="post-{{ post.id }}">
+        <img src="{{ post.image_url }}" alt="Post image" class="post-image">
+        <div class="post-content">
+          <p>{{ post.caption }}</p>
+          <p class="post-date">{{ post.date }}</p>
+        </div>
+        <div class="comment-section">
+          <h4>Comments</h4>
+          
+          {% if post.comments %}
+            {% set display_comments = post.comments[:5] %}
+            <div class="comments-container">
+              {% for comment in display_comments %}
+                <div class="comment">
+                  <span class="comment-username">{{ comment.username }}:</span> {{ comment.text }}
+                </div>
+              {% endfor %}
+            </div>
+            
+            {% if post.comments|length > 5 %}
+              <div class="show-more" onclick="showAllComments('post-{{ post.id }}')">Show all {{ post.comments|length }} comments</div>
+              <div class="all-comments" style="display: none;">
+                {% for comment in post.comments %}
+                  <div class="comment">
+                    <span class="comment-username">{{ comment.username }}:</span> {{ comment.text }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% else %}
+            <p>No comments yet</p>
+          {% endif %}
+          
+          <form class="comment-form" action="/add-comment/{{ post.id }}" method="POST">
+            <input type="text" name="comment_text" maxlength="200" placeholder="Add a comment..." class="comment-input" required>
+            <button type="submit" class="comment-submit">Post</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p>No posts yet.</p>
+    {% endif %}
+  </main>
+
+  {% if is_own_profile %}
+    <a href="/create-post" class="create-post-button">+</a>
+  {% endif %}
+
+  <script>
+    // Sign out functionality
+    document.getElementById('sign-out').addEventListener('click', function() {
+      // Clear token cookie
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      // Redirect to login page
+      window.location.href = "/login";
+    });
+
+    // Show all comments functionality
+    function showAllComments(postId) {
+      const post = document.getElementById(postId);
+      const commentsContainer = post.querySelector('.comments-container');
+      const allComments = post.querySelector('.all-comments');
+      const showMoreButton = post.querySelector('.show-more');
+      
+      commentsContainer.style.display = 'none';
+      allComments.style.display = 'block';
+      showMoreButton.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

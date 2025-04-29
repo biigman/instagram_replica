@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Followers - Instagram Replica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #0095f6;
+      font-weight: bold;
+    }
+    button {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #0086e0;
+    }
+    .back-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #0095f6;
+      text-decoration: none;
+    }
+    .user-list {
+      list-style: none;
+      padding: 0;
+    }
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .user-name {
+      font-weight: bold;
+    }
+    .user-id {
+      color: #999;
+      font-size: 0.9rem;
+    }
+    .user-link {
+      text-decoration: none;
+      color: inherit;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Instagram Replica</h1>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/profile/{{ current_user.id }}">Profile</a>
+      <button id="sign-out">Sign Out</button>
+    </div>
+  </header>
+
+  <a href="/profile/{{ profile_user.id }}" class="back-button">← Back to profile</a>
+
+  <h2>{{ profile_user.name }}'s Followers</h2>
+
+  {% if followers %}
+    <ul class="user-list">
+      {% for follower in followers %}
+        <li class="user-item">
+          <a href="/profile/{{ follower.id }}" class="user-link">
+            <div class="user-info">
+              <span class="user-name">{{ follower.name }}</span>
+              <span class="user-id">@{{ follower.id }}</span>
+            </div>
+          </a>
+          {% if current_user.id != follower.id %}
+            {% if follower.id in current_user.following %}
+              <form action="/unfollow/{{ follower.id }}" method="POST">
+                <button type="submit">Unfollow</button>
+              </form>
+            {% else %}
+              <form action="/follow/{{ follower.id }}" method="POST">
+                <button type="submit">Follow</button>
+              </form>
+            {% endif %}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No followers yet.</p>
+  {% endif %}
+
+  <script>
+    // Sign out functionality
+    document.getElementById('sign-out').addEventListener('click', function() {
+      // Clear token cookie
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      // Redirect to login page
+      window.location.href = "/login";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Instagram Clone</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">Instagram Clone</h2>
+                <p class="text-gray-600 mt-2">Login to your account</p>
+            </div>
+
+            <!-- Error message display -->
+            <div id="error-message" class="hidden p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg"></div>
+
+            <!-- Loading spinner -->
+            <div id="loading-spinner" class="hidden flex justify-center mb-4">
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input id="email" type="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="you@example.com">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input id="password" type="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••">
+                </div>
+
+                <div>
+                    <button id="login" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Log in
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center mt-6">
+                <p class="text-sm text-gray-600">
+                    Don't have an account?
+                    <a href="/signup" class="font-medium text-blue-600 hover:text-blue-500">Sign up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/static/firebase-login.js"></script>
+</body>
+</html>

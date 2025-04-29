@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search - Instagram Replica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #0095f6;
+      font-weight: bold;
+    }
+    button {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #0086e0;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    .search-bar {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .user-list {
+      list-style: none;
+      padding: 0;
+    }
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .user-name {
+      font-weight: bold;
+    }
+    .user-id {
+      color: #999;
+      font-size: 0.9rem;
+    }
+    .user-link {
+      text-decoration: none;
+      color: inherit;
+    }
+    .no-results {
+      color: #999;
+      text-align: center;
+      padding: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Instagram Replica</h1>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/profile/{{ user_id }}">Profile</a>
+      <button id="sign-out">Sign Out</button>
+    </div>
+  </header>
+
+  <h2>Search Users</h2>
+
+  <form action="/search" method="GET">
+    <input type="text" name="query" placeholder="Enter profile name..." class="search-bar" value="{{ query if query else '' }}">
+  </form>
+
+  {% if search_results %}
+    <ul class="user-list">
+      {% for user in search_results %}
+        <li class="user-item">
+          <a href="/profile/{{ user.id }}" class="user-link">
+            <div class="user-info">
+              <span class="user-name">{{ user.name }}</span>
+              <span class="user-id">@{{ user.id }}</span>
+            </div>
+          </a>
+          {% if user.id != user_id %}
+            {% if user.id in current_user.following %}
+              <form action="/unfollow/{{ user.id }}" method="POST">
+                <button type="submit">Unfollow</button>
+              </form>
+            {% else %}
+              <form action="/follow/{{ user.id }}" method="POST">
+                <button type="submit">Follow</button>
+              </form>
+            {% endif %}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% elif query %}
+    <p class="no-results">No users found matching "{{ query }}"</p>
+  {% else %}
+    <p class="no-results">Enter a profile name to search</p>
+  {% endif %}
+
+  <script>
+    // Sign out functionality
+    document.getElementById('sign-out').addEventListener('click', function() {
+      // Clear token cookie
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      // Redirect to login page
+      window.location.href = "/login";
+    });
+  </script>
+</body>
+</html>
