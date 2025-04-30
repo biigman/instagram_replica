@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Instagram Replica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #0095f6;
+      font-weight: bold;
+    }
+    button {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #0086e0;
+    }
+    .feed-post {
+      margin-bottom: 30px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .post-header {
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+    .post-header a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .profile-pic {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 8px;
+    }
+    .post-image {
+      width: 100%;
+      max-height: 500px;
+      object-fit: cover;
+    }
+    .post-content {
+      padding: 10px;
+    }
+    .post-date {
+      color: #999;
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+    .create-post-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #0095f6;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .search-bar {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .comment-section {
+      padding: 10px;
+      border-top: 1px solid #eee;
+    }
+    .comment {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    .comment-username {
+      font-weight: bold;
+    }
+    .comment-form {
+      display: flex;
+      margin-top: 10px;
+    }
+    .comment-input {
+      flex-grow: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .comment-submit {
+      margin-left: 8px;
+    }
+    .show-more {
+      color: #999;
+      cursor: pointer;
+      font-size: 0.9rem;
+      text-align: center;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Instagram Replica</h1>
+    <div class="nav-links">
+      <a href="/profile/{{ user_id }}">Profile</a>
+      <a href="/search">Search</a>
+      <button id="sign-out">Sign Out</button>
+    </div>
+  </header>
+
+  <form action="/search" method="GET" class="search-form">
+    <input type="text" name="query" placeholder="Search profiles..." class="search-bar">
+  </form>
+
+  <main>
+    {% if posts %}
+      {% for post in posts %}
+      <div class="feed-post" id="post-{{ post.id }}">
+        <div class="post-header">
+          {% if post.user_profile_picture %}
+            <img src="{{ post.user_profile_picture }}" alt="Profile" class="profile-pic">
+          {% endif %}
+          <a href="/profile/{{ post.user_id }}">
+            {% if post.user_name %}
+              {{ post.user_name }}
+            {% else %}
+              @{{ post.user_id }}
+            {% endif %}
+          </a>
+        </div>
+        <img src="{{ post.image_url }}" alt="Post image" class="post-image">
+        <div class="post-content">
+          <p>{{ post.caption }}</p>
+          <p class="post-date">
+            {{ post.formatted_date if post.formatted_date else post.date }}
+          </p>
+        </div>
+        <div class="comment-section">
+          <h4>Comments</h4>
+          
+          {% if post.comments %}
+            {% set display_comments = post.comments[:5] %}
+            <div class="comments-container">
+              {% for comment in display_comments %}
+                <div class="comment">
+                  <span class="comment-username">{{ comment.username }}:</span> {{ comment.text }}
+                </div>
+              {% endfor %}
+            </div>
+            
+            {% if post.comments|length > 5 %}
+              <div class="show-more" onclick="showAllComments('post-{{ post.id }}')">Show all {{ post.comments|length }} comments</div>
+              <div class="all-comments" style="display: none;">
+                {% for comment in post.comments %}
+                  <div class="comment">
+                    <span class="comment-username">{{ comment.username }}:</span> {{ comment.text }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% else %}
+            <p>No comments yet</p>
+          {% endif %}
+          
+          <form class="comment-form" action="/add-comment/{{ post.id }}" method="POST">
+            <input type="text" name="comment_text" maxlength="200" placeholder="Add a comment..." class="comment-input" required>
+            <button type="submit" class="comment-submit">Post</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p>No posts yet. Follow some users or create your first post!</p>
+    {% endif %}
+  </main>
+
+  <a href="/create-post" class="create-post-button">+</a>
+
+  <script type="module" src="/static/firebase-login.js"></script>
+  
+  <script>
+    // Format date function
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffSeconds = Math.floor(diffMs / 1000);
+      const diffMinutes = Math.floor(diffSeconds / 60);
+      const diffHours = Math.floor(diffMinutes / 60);
+      const diffDays = Math.floor(diffHours / 24);
+      
+      if (isNaN(date.getTime())) {
+        return dateString; // Return original if invalid
+      }
+      
+      if (diffSeconds < 60) {
+        return `${diffSeconds} seconds ago`;
+      } else if (diffMinutes < 60) {
+        return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`;
+      } else if (diffHours < 24) {
+        return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+      } else if (diffDays < 7) {
+        return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+      } else {
+        return date.toLocaleDateString();
+      }
+    }
+    
+    // Format all dates on load
+    document.addEventListener('DOMContentLoaded', function() {
+      const dates = document.querySelectorAll('.post-date');
+      dates.forEach(dateElement => {
+        const originalDate = dateElement.textContent.trim();
+        dateElement.textContent = formatDate(originalDate);
+      });
+    });
+
+    // Show all comments functionality
+    function showAllComments(postId) {
+      const post = document.getElementById(postId);
+      const commentsContainer = post.querySelector('.comments-container');
+      const allComments = post.querySelector('.all-comments');
+      const showMoreButton = post.querySelector('.show-more');
+      
+      commentsContainer.style.display = 'none';
+      allComments.style.display = 'block';
+      showMoreButton.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

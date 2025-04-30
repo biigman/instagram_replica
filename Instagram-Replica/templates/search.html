@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search - Instagram Replica</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fafafa;
+      color: #262626;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #dbdbdb;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #262626;
+      margin: 0;
+    }
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #262626;
+      margin-bottom: 20px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #0095f6;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .nav-links a:hover {
+      color: #00376b;
+    }
+    button {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background-color 0.2s ease;
+    }
+    button:hover {
+      background-color: #0086e0;
+    }
+    form {
+      margin-bottom: 25px;
+    }
+    .search-container {
+      display: flex;
+      gap: 10px;
+    }
+    .search-bar {
+      flex-grow: 1;
+      padding: 12px;
+      border: 1px solid #dbdbdb;
+      border-radius: 4px;
+      font-size: 14px;
+      background-color: #fafafa;
+      box-sizing: border-box;
+    }
+    .search-bar:focus {
+      outline: none;
+      border-color: #a8a8a8;
+      background-color: #fff;
+    }
+    .user-list {
+      list-style: none;
+      padding: 0;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+    }
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #efefef;
+    }
+    .user-item:last-child {
+      border-bottom: none;
+    }
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #262626;
+    }
+    .user-username {
+      color: #8e8e8e;
+      font-size: 14px;
+      margin-top: 3px;
+    }
+    .user-link {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background-color: #efefef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8e8e8e;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .follow-button {
+      background-color: #0095f6;
+    }
+    .unfollow-button {
+      background-color: #efefef;
+      color: #262626;
+    }
+    .unfollow-button:hover {
+      background-color: #dbdbdb;
+    }
+    .no-results {
+      color: #8e8e8e;
+      text-align: center;
+      padding: 30px 0;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Instagram Replica</h1>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/profile/{{ user_id }}">Profile</a>
+      <form action="/logout" method="POST" style="display: inline;">
+        <button type="submit">Sign Out</button>
+      </form>
+    </div>
+  </header>
+
+  <h2>Search Users</h2>
+
+  <form action="/search" method="GET">
+    <div class="search-container">
+      <input type="text" name="query" placeholder="Search for users..." class="search-bar" value="{{ query if query else '' }}">
+      <button type="submit">Search</button>
+    </div>
+  </form>
+
+  {% if search_results %}
+    <ul class="user-list">
+      {% for user in search_results %}
+        <li class="user-item">
+          <a href="/profile/{{ user.id }}" class="user-link">
+            <div class="user-avatar">
+              {% if user.profile_picture %}
+                <img src="{{ user.profile_picture }}" alt="{{ user.name }}" width="44" height="44">
+              {% else %}
+                {{ user.name[0].upper() }}
+              {% endif %}
+            </div>
+            <div class="user-info">
+              <span class="user-name">{{ user.name }}</span>
+              <span class="user-username">
+                {% if user.username %}
+                  @{{ user.username }}
+                {% endif %}
+              </span>
+            </div>
+          </a>
+          {% if user.id != user_id %}
+            {% if user.id in current_user.following %}
+              <form action="/unfollow/{{ user.id }}" method="POST">
+                <input type="hidden" name="redirect_url" value="/search?query={{ query }}">
+                <button type="submit" class="unfollow-button">Following</button>
+              </form>
+            {% else %}
+              <form action="/follow/{{ user.id }}" method="POST">
+                <input type="hidden" name="redirect_url" value="/search?query={{ query }}">
+                <button type="submit" class="follow-button">Follow</button>
+              </form>
+            {% endif %}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% elif query %}
+    <p class="no-results">No users found matching "{{ query }}"</p>
+  {% else %}
+    <p class="no-results">Enter a name to search for users</p>
+  {% endif %}
+</body>
+</html>

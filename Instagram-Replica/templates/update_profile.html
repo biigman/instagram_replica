@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profile - Instagram Replica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #0095f6;
+      font-weight: bold;
+    }
+    button {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #0086e0;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .card-header {
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-bottom: 1px solid #ddd;
+    }
+    .card-header h4 {
+      margin: 0;
+    }
+    .card-body {
+      padding: 20px;
+    }
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .form-control, .form-select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    textarea.form-control {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .profile-pic-wrapper {
+      cursor: pointer;
+      display: inline-block;
+    }
+    .rounded-circle {
+      border-radius: 50%;
+    }
+    .text-primary {
+      color: #0095f6;
+      cursor: pointer;
+    }
+    .mb-3 {
+      margin-bottom: 15px;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .d-none {
+      display: none;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid #eee;
+      margin: 20px 0;
+    }
+    .form-check {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .form-check-input {
+      margin-right: 8px;
+    }
+    .d-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .btn-outline-secondary {
+      background-color: white;
+      color: #555;
+      border: 1px solid #ddd;
+      padding: 8px 15px;
+      border-radius: 4px;
+      text-decoration: none;
+      text-align: center;
+      font-weight: bold;
+    }
+    .btn-outline-secondary:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Instagram Replica</h1>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/profile/{{ user_data.id }}">Profile</a>
+      <a href="/search">Search</a>
+      <button id="sign-out">Sign Out</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="card-header">
+        <h4>Edit Profile</h4>
+      </div>
+      <div class="card-body">
+        <form action="/update-profile" method="POST" enctype="multipart/form-data">
+          <div class="mb-3 text-center">
+            <div class="profile-pic-wrapper mb-3">
+              <img src="{{ user_data.profile_picture if user_data.profile_picture else '/static/images/default-profile.png' }}" 
+                   class="rounded-circle profile-pic" style="width: 100px; height: 100px; object-fit: cover;">
+            </div>
+            <label for="profile_picture" class="form-label text-primary">Change Profile Photo</label>
+            <input type="file" class="form-control d-none" id="profile_picture" name="profile_picture" accept="image/*">
+          </div>
+          
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ user_data.name }}" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" value="{{ user_data.username if user_data.username else '' }}">
+          </div>
+          
+          <div class="mb-3">
+            <label for="bio" class="form-label">Bio</label>
+            <textarea class="form-control" id="bio" name="bio" rows="3">{{ user_data.bio if user_data.bio else '' }}</textarea>
+          </div>
+          
+          <div class="mb-3">
+            <label for="website" class="form-label">Website</label>
+            <input type="url" class="form-control" id="website" name="website" value="{{ user_data.website if user_data.website else '' }}">
+          </div>
+          
+          <hr>
+          
+          <div class="mb-3">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" name="phone" value="{{ user_data.phone if user_data.phone else '' }}">
+          </div>
+          
+          <div class="mb-3">
+            <label for="gender" class="form-label">Gender</label>
+            <select class="form-select" id="gender" name="gender">
+              <option value="" {% if not user_data.gender %}selected{% endif %}>Prefer not to say</option>
+              <option value="male" {% if user_data.gender == 'male' %}selected{% endif %}>Male</option>
+              <option value="female" {% if user_data.gender == 'female' %}selected{% endif %}>Female</option>
+              <option value="other" {% if user_data.gender == 'other' %}selected{% endif %}>Other</option>
+            </select>
+          </div>
+          
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="private_account" name="private_account" {% if user_data.private_account %}checked{% endif %}>
+            <label class="form-check-label" for="private_account">Private Account</label>
+          </div>
+          
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn">Save Changes</button>
+            <a href="/profile/{{ user_data.id }}" class="btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Sign out functionality
+    document.getElementById('sign-out').addEventListener('click', function() {
+      // Clear token cookie
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      // Redirect to login page
+      window.location.href = "/login";
+    });
+
+    // Handle profile picture selection
+    document.querySelector('.profile-pic-wrapper').addEventListener('click', function() {
+      document.getElementById('profile_picture').click();
+    });
+    
+    document.getElementById('profile_picture').addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.querySelector('.profile-pic').src = e.target.result;
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  </script>
+</body>
+</html>

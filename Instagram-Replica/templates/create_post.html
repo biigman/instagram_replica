@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Post - Instagram Replica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #0095f6;
+      font-weight: bold;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    label {
+      font-weight: bold;
+    }
+    .image-preview {
+      width: 100%;
+      max-height: 400px;
+      border: 1px dashed #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .image-preview img {
+      max-width: 100%;
+      max-height: 400px;
+    }
+    .image-preview-text {
+      color: #999;
+      padding: 40px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    input[type="file"] {
+      padding: 10px 0;
+    }
+    button {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      align-self: flex-start;
+    }
+    button:hover {
+      background-color: #0086e0;
+    }
+    .error-message {
+      color: #ed4956;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Instagram Replica</h1>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/profile/{{ user_id }}">Profile</a>
+      <button id="sign-out">Sign Out</button>
+    </div>
+  </header>
+
+  <h2>Create New Post</h2>
+
+  <form action="/create-post" method="POST" enctype="multipart/form-data">
+    <div>
+      <label for="image">Image (PNG or JPG only)</label>
+      <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png" required onchange="previewImage(this)">
+      <div class="image-preview" id="image-preview">
+        <div class="image-preview-text">Image preview will appear here</div>
+      </div>
+    </div>
+
+    <div>
+      <label for="caption">Caption</label>
+      <textarea id="caption" name="caption" placeholder="Write a caption..." required></textarea>
+    </div>
+
+    <button type="submit">Post</button>
+  </form>
+
+  <script>
+    // Sign out functionality
+    document.getElementById('sign-out').addEventListener('click', function() {
+      // This will be handled by firebase-auth.js, but we can add a fallback
+      if (window.signOut) {
+        window.signOut();
+      } else {
+        window.location.href = "/logout";
+      }
+    });
+
+    // Image preview functionality
+    function previewImage(input) {
+      const preview = document.getElementById('image-preview');
+      const previewText = preview.querySelector('.image-preview-text');
+      
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // Check if file is PNG or JPG
+        if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+          alert('Please select a PNG or JPG image file.');
+          input.value = '';
+          return;
+        }
+        
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          // Clear preview
+          while (preview.firstChild) {
+            preview.removeChild(preview.firstChild);
+          }
+          
+          // Create preview image
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          preview.appendChild(img);
+        };
+        
+        reader.readAsDataURL(file);
+      } else {
+        // Reset preview
+        preview.innerHTML = '<div class="image-preview-text">Image preview will appear here</div>';
+      }
+    }
+  </script>
+</body>
+</html>

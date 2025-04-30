@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Instagram Replica</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      max-width: 450px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fafafa;
+      color: #262626;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+      margin-top: 50px;
+      border: 1px solid #dbdbdb;
+    }
+    h1 {
+      text-align: center;
+      font-size: 34px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #262626;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #262626;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dbdbdb;
+      border-radius: 4px;
+      font-size: 14px;
+      background-color: #fafafa;
+      box-sizing: border-box;
+    }
+    input:focus {
+      outline: none;
+      border-color: #a8a8a8;
+      background-color: #fff;
+    }
+    button {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+      padding: 10px 0;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.2s ease;
+    }
+    button:hover {
+      background-color: #0086e0;
+    }
+    .signup-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #8e8e8e;
+    }
+    .signup-link a {
+      color: #0095f6;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .signup-link a:hover {
+      color: #00376b;
+    }
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      margin: 15px 0;
+    }
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 3px solid #0095f6;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .error-message {
+      background-color: #ffebee;
+      color: #c62828;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Instagram Replica</h1>
+    
+    <div id="error-message" class="error-message"></div>
+    
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Enter your email">
+    </div>
+    
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password">
+    </div>
+    
+    <button id="login">Log In</button>
+    
+    <div id="loading-spinner" class="loading-spinner">
+      <div class="spinner"></div>
+    </div>
+    
+    <div class="signup-link">
+      Don't have an account? <a href="/signup">Sign up</a>
+    </div>
+  </div>
+
+  <!-- External Script Import -->
+  <script type="module" src="/static/firebase-login.js"></script>
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Instagram Replica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .profile-header {
+      display: flex;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+    .profile-info {
+      flex-grow: 1;
+    }
+    .profile-stats {
+      display: flex;
+      margin: 15px 0;
+      gap: 20px;
+    }
+    .stat-item {
+      cursor: pointer;
+      text-decoration: none;
+      color: #333;
+    }
+    .stat-count {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #0095f6;
+      font-weight: bold;
+    }
+    button {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #0086e0;
+    }
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 5px;
+    }
+    .post-card {
+      position: relative;
+      padding-bottom: 100%;
+      cursor: pointer;
+    }
+    .post-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .post-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: white;
+      max-width: 90%;
+      max-height: 90%;
+      display: flex;
+      flex-direction: column;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .modal-image {
+      max-width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+    }
+    .modal-details {
+      padding: 15px;
+    }
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .create-post-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #0095f6;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .edit-profile-btn, .follow-btn, .unfollow-btn {
+      padding: 8px 15px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .edit-profile-btn {
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ddd;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .follow-btn {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+    }
+    .unfollow-btn {
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .post-date {
+      color: #999;
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+    .post-caption {
+      margin-bottom: 10px;
+    }
+    .feed-post {
+      margin-bottom: 30px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .post-header {
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+    .post-header a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .post-content {
+      padding: 10px;
+    }
+    .comment-section {
+      padding: 10px;
+      border-top: 1px solid #eee;
+    }
+    .comment {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    .comment-username {
+      font-weight: bold;
+    }
+    .comment-form {
+      display: flex;
+      margin-top: 10px;
+    }
+    .comment-input {
+      flex-grow: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .comment-submit {
+      margin-left: 8px;
+    }
+    .show-more {
+      color: #999;
+      cursor: pointer;
+      font-size: 0.9rem;
+      text-align: center;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Instagram Replica</h1>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/search">Search</a>
+      <button id="sign-out">Sign Out</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="profile-details-container">
+     <div class="profile-header">
+      <div class="profile-pic-container">
+       {% if user_data.profile_picture %}
+        <img src="{{ user_data.profile_picture }}" alt="Profile" class="profile-pic">
+       {% else %}
+        <img src="/static/default-profile.png" alt="Profile" class="profile-pic">
+       {% endif %}
+      </div>
+      <div class="profile-info">
+       <h2>{{ user_data.name }}</h2>
+       {% if user_data.username %}
+        <p>@{{ user_data.username }}</p>
+       {% endif %}
+  
+       <div class="profile-stats">
+        <div class="stat-item">
+         <div class="stat-count">{{ posts|length }}</div>
+         <div>Posts</div>
+        </div>
+        <a href="/followers/{{ user_data.id }}" class="stat-item">
+         <div class="stat-count">{{ user_data.followers|length if user_data.followers else 0 }}</div>
+         <div>Followers</div>
+        </a>
+        <a href="/following/{{ user_data.id }}" class="stat-item">
+         <div class="stat-count">{{ user_data.following|length if user_data.following else 0 }}</div>
+         <div>Following</div>
+        </a>
+       </div>
+  
+       {% if user_data.bio %}
+        <p>{{ user_data.bio }}</p>
+       {% endif %}
+  
+       {% if user_data.website %}
+        <p><a href="{{ user_data.website }}" target="_blank">{{ user_data.website }}</a></p>
+       {% endif %}
+  
+       {% if is_own_profile %}
+       <div class="profile-action">
+        <a href="/create-post"><button>Create Post</button></a>
+        <a href="/edit-profile"><button class="edit-button">Edit Profile</button></a>
+       </div>
+       {% else %}
+       <div class="profile-action">
+        {% if current_user.id in user_data.followers %}
+         <form action="/unfollow/{{ user_data.id }}" method="POST">
+          <button type="submit">Unfollow</button>
+         </form>
+        {% else %}
+         <form action="/follow/{{ user_data.id }}" method="POST">
+          <button type="submit">Follow</button>
+         </form>
+        {% endif %}
+       </div>
+       {% endif %}
+      </div>
+     </div>
+    </div>
+  
+    <div class="post-section">
+     {% if posts %}
+      <div class="post-grid">
+       {% for post in posts %}
+        <div class="post-card" onclick="openPostModal('{{ post.id }}')">
+         <img src="{{ post.image_url }}" alt="Post" class="post-image">
+        </div>
+       {% endfor %}
+      </div>
+  
+      {% for post in posts %}
+       <div id="modal-{{ post.id }}" class="post-modal">
+        <span class="modal-close" onclick="closePostModal('{{ post.id }}')">&times;</span>
+        <div class="modal-content">
+         <div class="feed-post" id="post-{{ post.id }}">
+          <div class="post-header">
+           {% if user_data.profile_picture %}
+            <img src="{{ user_data.profile_picture }}" alt="Profile" class="profile-pic" style="width: 32px; height: 32px;">
+           {% endif %}
+           <a href="/profile/{{ post.user_id }}">{{ user_data.name }}</a>
+          </div>
+          <img src="{{ post.image_url }}" alt="Post image" class="modal-image">
+          <div class="post-content">
+           <p class="post-caption">{{ post.caption }}</p>
+           <p class="post-date">{{ post.date }}</p>
+          </div>
+          <div class="comment-section">
+           <h4>Comments</h4>
+  
+           {% if post.comments %}
+            {% set display_comments = post.comments[:5] %}
+            <div class="comments-container">
+             {% for comment in display_comments %}
+              <div class="comment">
+               <span class="comment-username">{{ comment.username }}:</span> {{ comment.text }}
+              </div>
+             {% endfor %}
+            </div>
+  
+            {% if post.comments|length > 5 %}
+             <div class="show-more" onclick="showAllComments('post-{{ post.id }}')">Show all {{ post.comments|length }} comments</div>
+             <div class="all-comments" style="display: none;">
+              {% for comment in post.comments %}
+               <div class="comment">
+                <span class="comment-username">{{ comment.username }}:</span> {{ comment.text }}
+               </div>
+              {% endfor %}
+             </div>
+            {% endif %}
+           {% else %}
+            <p>No comments yet</p>
+           {% endif %}
+  
+           <form class="comment-form" action="/add-comment/{{ post.id }}" method="POST">
+            <input type="text" name="comment_text" maxlength="200" placeholder="Add a comment..." class="comment-input" required>
+            <button type="submit" class="comment-submit">Post</button>
+           </form>
+          </div>
+         </div>
+        </div>
+       </div>
+      {% endfor %}
+     {% else %}
+      <p>No posts yet.</p>
+     {% endif %}
+    </div>
+   </main>
+  
+   {% if is_own_profile %}
+   <a href="/create-post" class="create-post-button">+</a>
+   {% endif %}
+
+  <script type="module" src="/static/firebase-login.js"></script>
+  <script>
+    // Post modal functions
+    function openPostModal(postId) {
+      document.getElementById('modal-' + postId).style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+    }
+    
+    function closePostModal(postId) {
+      document.getElementById('modal-' + postId).style.display = 'none';
+      document.body.style.overflow = ''; // Re-enable scrolling
+    }
+    
+    // Close modal when clicking outside the content
+    window.onclick = function(event) {
+      const modals = document.getElementsByClassName('post-modal');
+      for (let i = 0; i < modals.length; i++) {
+        if (event.target === modals[i]) {
+          modals[i].style.display = 'none';
+          document.body.style.overflow = '';
+        }
+      }
+    }
+    
+    // Function to show all comments
+    function showAllComments(postId) {
+      const post = document.getElementById(postId);
+      const commentsContainer = post.querySelector('.comments-container');
+      const allComments = post.querySelector('.all-comments');
+      const showMoreBtn = post.querySelector('.show-more');
+      
+      commentsContainer.style.display = 'none';
+      allComments.style.display = 'block';
+      showMoreBtn.style.display = 'none';
+    }
+    
+    // Format all dates on load
+    document.addEventListener('DOMContentLoaded', function() {
+      const dates = document.querySelectorAll('.post-date');
+      dates.forEach(dateElement => {
+        const originalDate = dateElement.textContent.trim();
+        if (window.formatDate) {
+          dateElement.textContent = formatDate(originalDate);
+        } else {
+          // Fallback date formatting if the imported function isn't available
+          try {
+            const date = new Date(originalDate);
+            const now = new Date();
+            const diffSeconds = Math.floor((now - date) / 1000);
+            
+            if (diffSeconds < 60) {
+              dateElement.textContent = `${diffSeconds} seconds ago`;
+            } else if (diffSeconds < 3600) {
+              const minutes = Math.floor(diffSeconds / 60);
+              dateElement.textContent = `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
+            } else if (diffSeconds < 86400) {
+              const hours = Math.floor(diffSeconds / 3600);
+              dateElement.textContent = `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
+            } else if (diffSeconds < 604800) {
+              const days = Math.floor(diffSeconds / 86400);
+              dateElement.textContent = `${days} ${days === 1 ? 'day' : 'days'} ago`;
+            } else {
+              const options = { year: 'numeric', month: 'short', day: 'numeric' };
+              dateElement.textContent = date.toLocaleDateString('en-US', options);
+            }
+          } catch (e) {
+            console.error('Error formatting date:', e);
+          }
+        }
+      });
+    });
+    
+    // Handle sign out functionality
+    document.getElementById('sign-out').addEventListener('click', function() {
+      // This will be handled by firebase-auth.js, but we can add a fallback
+      if (window.signOut) {
+        window.signOut();
+      } else {
+        window.location.href = '/logout';
+      }
+    });
+  </script>
+</body>
+</html>
